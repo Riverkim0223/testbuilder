@@ -2,11 +2,17 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { Scores, UserCondition } from '@/types';
-import { captureResultBlob, downloadResultImage } from '@/utils/captureResultImage';
+import {
+  captureResultBlob,
+  downloadResultImage,
+  shareResultBlob,
+} from '@/utils/captureResultImage';
 import { getMatches } from '@/utils/matchAlgorithm';
 import { getTypeMatches } from '@/utils/typeMatching';
 import { buildShareText, buildShareUrl, saveResultState } from '@/utils/shareResult';
+import { getDifficultyLabel } from '@/utils/challengeMeta';
 import MediaPreview from './MediaPreview';
+import SaveImageModal from './SaveImageModal';
 
 interface ResultProps {
   scores: Scores;
@@ -19,12 +25,23 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
   const mergedCondition = { ...defaultCondition, ...condition };
   const resultCardRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [savePreviewUrl, setSavePreviewUrl] = useState<string | null>(null);
+  const [savePreviewBlob, setSavePreviewBlob] = useState<Blob | null>(null);
+
+  const closeSaveModal = () => {
+    if (savePreviewUrl) URL.revokeObjectURL(savePreviewUrl);
+    setSavePreviewUrl(null);
+    setSavePreviewBlob(null);
+  };
 
   const { primaryType, similarType, oppositeType, allTypes } = useMemo(
     () => getTypeMatches(scores),
     [scores],
   );
-  const { bestMatch, similarMatch, worstMatch } = useMemo(() => getMatches(scores), [scores]);
+  const { bestMatch, similarMatch, worstMatch } = useMemo(
+    () => getMatches(scores, mergedCondition),
+    [scores, mergedCondition],
+  );
 
   const getPeopleText = (type: UserCondition['peopleType']) => {
     switch (type) {
@@ -56,7 +73,12 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
     if (!resultCardRef.current) return;
     try {
       setIsDownloading(true);
-      await downloadResultImage(resultCardRef.current);
+      const result = await downloadResultImage(resultCardRef.current);
+
+      if (result.method === 'manual') {
+        setSavePreviewUrl(result.blobUrl);
+        setSavePreviewBlob(result.blob);
+      }
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
         return;
@@ -65,6 +87,16 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
       alert('이미지 저장에 실패했습니다. 잠시 후 다시 시도해 주세요.');
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const handleShareFromModal = async () => {
+    if (!savePreviewBlob) return;
+    try {
+      await shareResultBlob(savePreviewBlob);
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') return;
+      alert('공유에 실패했습니다.');
     }
   };
 
@@ -113,6 +145,13 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-between px-3 py-4 bg-slate-50">
+      {savePreviewUrl && (
+        <SaveImageModal
+          imageUrl={savePreviewUrl}
+          onClose={closeSaveModal}
+          onShare={handleShareFromModal}
+        />
+      )}
       <div
         ref={resultCardRef}
         data-result-card
@@ -207,7 +246,7 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
           {/* 이 유형 추천 챌린지 */}
           <div className="rounded-xl border border-pink-100 bg-gradient-to-br from-pink-50 to-purple-50 p-4">
             <span className="text-[10px] font-bold text-pink-500 block text-center mb-2">
-              🎯 {primaryType.title}에게 찰떡인 챌린지
+              🎯 {primaryType.title} · {getDifficultyText(mergedCondition.difficulty).replace(' 난이도', '')} 맞춤
             </span>
             <div className="flex items-center gap-3">
               <span className="text-4xl flex-shrink-0">{bestMatch.imageUrl}</span>
@@ -217,7 +256,7 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
                 </h4>
                 <p className="text-[11px] text-slate-500 mt-1 line-clamp-2">{bestMatch.description}</p>
                 <span className="inline-block mt-2 text-[10px] font-bold text-pink-600 bg-white px-2 py-0.5 rounded-full border border-pink-100">
-                  챌린지 매칭 {bestMatch.matchRate}%
+                  챌린지 매칭 {bestMatch.matchRate}% · {getDifficultyLabel(bestMatch.difficulty)}
                 </span>
               </div>
             </div>
@@ -310,7 +349,7 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
           disabled={isDownloading}
           className="w-full py-4 flex items-center justify-center bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition active:scale-95 shadow-md disabled:bg-slate-400"
         >
-          {isDownloading ? '저장 중...' : '📸 결과 이미지로 저장하기'}
+          {isDownloading ? '이미지 만드는 중...' : '📸 결과 이미지로 저장하기'}
         </button>
         <button
           onClick={onRestart}

@@ -1,6 +1,16 @@
-import { Scores } from '@/types';
+import { Scores, UserCondition } from '@/types';
 import { challenges, Challenge } from './challenges';
+import { filterChallengesByCondition, getChallengeMeta, getConditionPenalty } from './challengeMeta';
 import { getYouTubeMatchUrl } from './youtubeMatches';
+
+export interface RankedChallenge extends Challenge {
+  distance: number;
+  matchRate: number;
+  conditionPenalty: number;
+  adjustedDistance: number;
+  difficulty: 1 | 2 | 3;
+  peopleType: string;
+}
 
 function attachMedia(challenge: Challenge): Challenge {
   const youtubeUrl = getYouTubeMatchUrl(challenge.id) ?? challenge.youtubeUrl;
@@ -12,39 +22,52 @@ function attachMedia(challenge: Challenge): Challenge {
   };
 }
 
-// 1. 점수 간의 유클리드 거리 계산 (작성하신 코드 유지)
 export function getMatchDistance(userScores: Scores, challenge: Challenge): number {
   return Math.sqrt(
-    Math.pow(userScores.energy - challenge.idealScores.energy, 2) +
-      Math.pow(userScores.presence - challenge.idealScores.presence, 2) +
-      Math.pow(userScores.movement - challenge.idealScores.movement, 2) +
-      Math.pow(userScores.direction - challenge.idealScores.direction, 2)
+    (userScores.energy - challenge.idealScores.energy) ** 2 +
+      (userScores.presence - challenge.idealScores.presence) ** 2 +
+      (userScores.movement - challenge.idealScores.movement) ** 2 +
+      (userScores.direction - challenge.idealScores.direction) ** 2,
   );
 }
 
-// 2. 100점 만점 기준 매칭률(%) 계산 (작성하신 코드 유지)
 export function getMatchRate(userScores: Scores, challenge: Challenge): number {
   const distance = getMatchDistance(userScores, challenge);
   const maxDistance = 200;
   return Math.max(0, Math.round(100 - (distance / maxDistance) * 100));
 }
 
-// 3. 베스트, 시밀러, 워스트 매치를 한 번에 찾아 반환하는 함수
-export function getMatches(userScores: Scores) {
-  // 모든 챌린지에 대해 거리(distance)와 매칭률(matchRate)을 계산
-  const calculated = challenges.map((challenge) => {
+export function getMatches(userScores: Scores, condition?: UserCondition) {
+  const mergedCondition: UserCondition = {
+    peopleType: condition?.peopleType ?? '1in',
+    difficulty: condition?.difficulty ?? 2,
+  };
+
+  const pool = filterChallengesByCondition(challenges, mergedCondition);
+
+  const calculated: RankedChallenge[] = pool.map((challenge) => {
     const enriched = attachMedia(challenge);
+    const meta = getChallengeMeta(enriched.id);
     const distance = getMatchDistance(userScores, enriched);
-    const matchRate = getMatchRate(userScores, enriched);
-    return { ...enriched, distance, matchRate };
+    const conditionPenalty = getConditionPenalty(enriched.id, mergedCondition);
+    const adjustedDistance = distance + conditionPenalty;
+
+    return {
+      ...enriched,
+      distance,
+      matchRate: getMatchRate(userScores, enriched),
+      conditionPenalty,
+      adjustedDistance,
+      difficulty: meta.difficulty,
+      peopleType: meta.peopleType,
+    };
   });
 
-  // 거리가 가까운 순(오름차순)으로 정렬 (1등부터 꼴등까지)
-  calculated.sort((a, b) => a.distance - b.distance);
+  calculated.sort((a, b) => a.adjustedDistance - b.adjustedDistance);
 
   return {
     bestMatch: calculated[0],
-    similarMatch: calculated[1], // 2등
-    worstMatch: calculated[calculated.length - 1], // 오차가 가장 큰 마지막 요소
+    similarMatch: calculated[1],
+    worstMatch: calculated[calculated.length - 1],
   };
 }
