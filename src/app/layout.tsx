@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: '나만의 릴스 성향 테스트 🎬',
   description: '12개 질문으로 나의 숏폼 성향을 분석하고, 찰떡 릴스 챌린지를 추천받아보세요!',
-  keywords: ['릴스', '인스타그램', '챌린지', '성향 테스트', '숏폼', '릴스 추천'],
+  keywords: ['릴스', '숏폼', '챌린지', '성향 테스트', '릴스 추천', '쇼츠'],
   openGraph: {
     title: '나만의 릴스 성향 테스트 🎬',
     description: '12개 질문으로 나의 숏폼 성향을 분석하고, 찰떡 릴스 챌린지를 추천받아보세요!',

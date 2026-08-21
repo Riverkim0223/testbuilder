@@ -15,6 +15,9 @@ export interface Challenge {
 }
 
 
+/** 릴스 댄스 챌린지 20개 — 추천 매칭 풀 (au_* 오디오 트렌드는 제외) */
+export const danceChallenges: Challenge[] = [];
+
 export const challenges: Challenge[] = [
   {
     id: 'ch_001',
@@ -328,3 +331,5 @@ export const challenges: Challenge[] = [
     youtubeUrl: 'https://www.youtube.com/shorts/Cfe_pQGsJjQ'
   }
 ];
+
+danceChallenges.push(...challenges.filter((challenge) => challenge.id.startsWith('ch_')));

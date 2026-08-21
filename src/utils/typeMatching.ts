@@ -58,3 +58,24 @@ export function getTypeMatches(userScores: Scores) {
 export function getResultType(userScores: Scores): ResultType {
   return getTypeMatches(userScores).primaryType.id;
 }
+
+/** 8유형 ↔ 챌린지 태그 연결 — 성향·추천 일치도 보정용 */
+export const TYPE_TAG_AFFINITY: Record<ResultType, string[]> = {
+  SOFT_CUTE: ['#말랑큐티형', '#표정천재형'],
+  POWER_PERFORMER: ['#파워퍼포머형', '#칼각완성형'],
+  EYE_CATCHER: ['#시선강탈형', '#표정천재형'],
+  DETAIL_DIRECTOR: ['#아기자기디테일형', '#무드연출가형'],
+  CONCEPT_HOLIC: ['#반전매력형', '#표정천재형', '#컨셉'],
+  GROOVE_MASTER: ['#칼각완성형', '#파워퍼포머형'],
+  VIBE_MAKER: ['#시선강탈형', '#파워퍼포머형', '#현재확산'],
+  MINIMAL_MOOD: ['#무드연출가형', '#아기자기디테일형'],
+};
+
+export function getTypeTagAffinityBonus(
+  primaryType: ResultType,
+  challengeTags: string[],
+): number {
+  const affinityTags = TYPE_TAG_AFFINITY[primaryType];
+  const hasMatch = challengeTags.some((tag) => affinityTags.includes(tag));
+  return hasMatch ? -14 : 0;
+}
