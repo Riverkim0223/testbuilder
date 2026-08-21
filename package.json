@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/generate-og-image.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "fetch-previews": "node scripts/fetch-youtube-previews.mjs"
+    "fetch-previews": "node scripts/fetch-youtube-previews.mjs",
+    "generate:og": "node scripts/generate-og-image.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

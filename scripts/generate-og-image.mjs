@@ -103,7 +103,7 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   <text x="1140" y="520" font-size="32" transform="rotate(-6 1140 520)" opacity="0.8">📱</text>
 
   <!-- bottom url -->
-  <text x="80" y="590" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#6b6580" letter-spacing="1">reels-fit-test.vercel.app</text>
+  <text x="80" y="590" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#6b6580" letter-spacing="1">reels-fit.vercel.app</text>
 </svg>`;
 
 await sharp(Buffer.from(svg))
