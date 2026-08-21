@@ -1,41 +1,12 @@
 import { Challenge, Scores, ResultType, UserCondition } from '@/types';
+import { getResultType as resolveResultType } from './typeMatching';
 
 /**
  * 1. 유저의 4축 점수를 기반으로 대표 결과 유형(ResultType) 결정
+ * (8유형 이상 프로필과의 거리 매칭)
  */
 export function getResultType(scores: Scores): ResultType {
-  const { energy, presence, movement, direction } = scores;
-
-  // 1. 파워 퍼포머: 에너지와 움직임이 모두 높은 경우
-  if (energy >= 65 && movement >= 65) {
-    return 'POWER_PERFORMER';
-  }
-  // 2. 컨셉 과몰입: 존재감과 연출이 모두 높은 경우
-  if (presence >= 60 && direction >= 60) {
-    return 'CONCEPT_HOLIC';
-  }
-  // 3. 분위기 메이커: 에너지와 존재감이 높고 텐션이 좋은 경우
-  if (energy >= 60 && presence >= 65) {
-    return 'VIBE_MAKER';
-  }
-  // 4. 아기자기 연출: 연출 점수가 가장 높은 경우
-  if (direction >= 65) {
-    return 'DETAIL_DIRECTOR';
-  }
-  // 5. 시선 강탈: 존재감 점수가 독보적인 경우
-  if (presence >= 65) {
-    return 'EYE_CATCHER';
-  }
-  // 6. 여유로운 그루버: 움직임은 높지만 에너지는 과하지 않은 경우
-  if (movement >= 60 && energy < 60) {
-    return 'GROOVE_MASTER';
-  }
-  // 7. 감성 미니멀: 전체적으로 점수가 과하지 않고 얌전한 경우
-  if (energy <= 40 && movement <= 40 && direction <= 40) {
-    return 'MINIMAL_MOOD';
-  }
-  // 8. 기본: 말랑 큐티형
-  return 'SOFT_CUTE';
+  return resolveResultType(scores);
 }
 
 /**

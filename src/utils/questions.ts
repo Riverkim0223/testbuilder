@@ -214,11 +214,24 @@ export function calculateScores(answers: Record<number, number>): Scores {
   };
 }
 
-/** 질문 순서대로 모은 1~5점 배열 → 0~100점 4축 점수 */
-export function calculateScoresFromAnswers(answerScores: number[]): Scores {
+/** Fisher-Yates 셔플 — 테스트 시작마다 질문 순서를 섞습니다 */
+export function shuffleQuestions(source: QuestionItem[] = questions): QuestionItem[] {
+  const shuffled = [...source];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+/** 섞인 질문 순서에 맞춘 1~5점 배열 → 0~100점 4축 점수 */
+export function calculateScoresFromAnswers(
+  orderedQuestions: QuestionItem[],
+  answerScores: number[],
+): Scores {
   const answers: Record<number, number> = {};
 
-  questions.forEach((question, index) => {
+  orderedQuestions.forEach((question, index) => {
     const score = answerScores[index];
     if (score !== undefined) {
       answers[question.id] = score;

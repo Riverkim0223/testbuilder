@@ -1,5 +1,16 @@
 import { Scores } from '@/types';
-import { challenges, Challenge } from './challenges'; // 실제 경로에 맞게 확인해주세요!
+import { challenges, Challenge } from './challenges';
+import { getYouTubeMatchUrl } from './youtubeMatches';
+
+function attachMedia(challenge: Challenge): Challenge {
+  const youtubeUrl = getYouTubeMatchUrl(challenge.id) ?? challenge.youtubeUrl;
+
+  return {
+    ...challenge,
+    youtubeUrl,
+    previewImageUrl: `/previews/${challenge.id}.jpg`,
+  };
+}
 
 // 1. 점수 간의 유클리드 거리 계산 (작성하신 코드 유지)
 export function getMatchDistance(userScores: Scores, challenge: Challenge): number {
@@ -22,9 +33,10 @@ export function getMatchRate(userScores: Scores, challenge: Challenge): number {
 export function getMatches(userScores: Scores) {
   // 모든 챌린지에 대해 거리(distance)와 매칭률(matchRate)을 계산
   const calculated = challenges.map((challenge) => {
-    const distance = getMatchDistance(userScores, challenge);
-    const matchRate = getMatchRate(userScores, challenge);
-    return { ...challenge, distance, matchRate };
+    const enriched = attachMedia(challenge);
+    const distance = getMatchDistance(userScores, enriched);
+    const matchRate = getMatchRate(userScores, enriched);
+    return { ...enriched, distance, matchRate };
   });
 
   // 거리가 가까운 순(오름차순)으로 정렬 (1등부터 꼴등까지)

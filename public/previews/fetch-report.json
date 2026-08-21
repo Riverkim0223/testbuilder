@@ -1,8 +1,8 @@
 {
   "summary": {
-    "ok": 30,
+    "ok": 29,
     "skipped": 0,
-    "failed": 0
+    "failed": 1
   },
   "results": [
     {
@@ -62,13 +62,13 @@
     {
       "id": "ch_010",
       "status": "ok",
-      "youtubeUrl": "https://www.youtube.com/shorts/yBRdTAR7-Js",
+      "youtubeUrl": "https://www.youtube.com/shorts/dwwljQG5pjU",
       "file": "/previews/ch_010.jpg"
     },
     {
       "id": "ch_011",
       "status": "ok",
-      "youtubeUrl": "https://www.youtube.com/shorts/CCSiMOEALc4",
+      "youtubeUrl": "https://www.youtube.com/shorts/5m4hCcnRhP4",
       "file": "/previews/ch_011.jpg"
     },
     {
@@ -80,7 +80,7 @@
     {
       "id": "ch_013",
       "status": "ok",
-      "youtubeUrl": "https://www.youtube.com/watch?v=kuVNutQeBBA",
+      "youtubeUrl": "https://www.youtube.com/shorts/OI99VhaW7-A",
       "file": "/previews/ch_013.jpg"
     },
     {
@@ -104,7 +104,7 @@
     {
       "id": "ch_017",
       "status": "ok",
-      "youtubeUrl": "https://www.youtube.com/shorts/5m4hCcnRhP4",
+      "youtubeUrl": "https://www.youtube.com/shorts/dwwljQG5pjU",
       "file": "/previews/ch_017.jpg"
     },
     {
@@ -115,9 +115,9 @@
     },
     {
       "id": "ch_019",
-      "status": "ok",
-      "youtubeUrl": "https://www.youtube.com/shorts/yBRdTAR7-Js",
-      "file": "/previews/ch_019.jpg"
+      "status": "failed",
+      "reason": "Image HTTP 404",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ctm-Up7xMfw"
     },
     {
       "id": "ch_020",
