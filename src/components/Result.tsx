@@ -3,12 +3,13 @@
 import { useMemo, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Scores, UserCondition } from '@/types';
-import { getBestMatch } from '@/utils/matchAlgorithm';
-import { InstagramEmbed, YouTubeEmbed } from 'react-social-media-embed';
-
+// 💡 수정됨: getMatches 함수를 가져옵니다.
+import { getMatches } from '@/utils/matchAlgorithm'; 
+import MediaPreview from './MediaPreview';
+    
 interface ResultProps {
   scores: Scores;
-  condition: UserCondition; // 넘겨받은 조건 데이터
+  condition: UserCondition; 
   onRestart: () => void;
 }
 
@@ -21,8 +22,10 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
   const resultCardRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // 유저 점수를 기반으로 가장 잘 맞는 챌린지 계산
-  const bestMatch = useMemo(() => getBestMatch(scores), [scores]);
+  // 💡 수정됨: 유저 점수를 기반으로 베스트, 시밀러, 워스트 챌린지를 모두 계산
+  const { bestMatch, similarMatch, worstMatch } = useMemo(() => getMatches(scores), [scores]);
+  // getMatches에서 반환된 matchRate(매칭률)을 바로 사용
+  const matchRate = bestMatch.matchRate;
 
   // condition 데이터를 텍스트로 변환하기 위한 헬퍼 함수
   const getPeopleText = (type: UserCondition['peopleType']) => {
@@ -48,22 +51,19 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
     if (!resultCardRef.current) return;
     
     try {
-      setIsDownloading(true); // 다운로드 중 버튼 상태 변경
+      setIsDownloading(true); 
       
-      // html2canvas를 사용하여 특정 DOM 영역을 캔버스로 변환
       const canvas = await html2canvas(resultCardRef.current, {
-        scale: 2, // 고해상도 캡처를 위해 스케일 업
-        useCORS: true, // 외부 이미지가 있을 경우 CORS 이슈 방지
-        backgroundColor: '#ffffff', // 배경색 지정 (투명 방지)
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: '#ffffff', 
       });
 
-      // 캔버스를 이미지 URL(base64)로 변환
       const image = canvas.toDataURL('image/png');
 
-      // 가상의 a 태그를 만들어 다운로드 트리거
       const link = document.createElement('a');
       link.href = image;
-      link.download = `reels-challenge-result.png`; // 저장될 파일명
+      link.download = `reels-challenge-result.png`; 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -74,22 +74,49 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
       setIsDownloading(false);
     }
   };
+// 💡 새롭게 추가하는 SNS 공유하기 함수
+  const handleShare = async () => {
+    // 공유할 데이터 설정
+    const shareData = {
+      title: '나만의 릴스 성향 테스트 🎬',
+      text: `나의 찰떡 릴스 챌린지는 [${bestMatch.name}]! 너도 한번 해볼래?`,
+      url: window.location.origin, // 현재 사이트 주소 (배포된 도메인)
+    };
+
+    // 브라우저가 Web Share API를 지원하는지 확인 (대부분의 모바일 기기는 지원)
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        console.log('공유가 취소되었거나 실패했습니다.', error);
+      }
+    } else {
+      // 미지원 브라우저(PC 등)일 경우 클립보드에 링크 복사
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        alert('🔗 링크가 클립보드에 복사되었습니다! 친구들에게 공유해보세요.');
+      } catch (error) {
+        console.error('링크 복사 실패:', error);
+        alert('링크 복사에 실패했습니다.');
+      }
+    }
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between p-6 bg-slate-50">
+    <div className="min-h-screen flex flex-col items-center justify-between px-3 py-4 bg-slate-50">
       
-      {/* 캡처될 결과 카드 영역 (ref 연결) */}
+      {/* 📸 캡처될 결과 카드 영역 */}
       <div 
         ref={resultCardRef}
-        className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden mt-8 border border-slate-100"
+        className="w-full bg-white rounded-2xl shadow-xl overflow-hidden mt-2 border border-slate-100"
       >
         {/* 상단 비주얼 영역 */}
-        <div className="bg-gradient-to-br from-pink-500 to-purple-600 p-10 flex flex-col items-center justify-center text-white">
+        <div className="bg-gradient-to-br from-pink-500 to-purple-600 px-4 py-7 flex flex-col items-center justify-center text-white">
           <div className="text-7xl mb-4">
             {bestMatch.imageUrl}
           </div>
           <span className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm mb-2">
-            알고리즘이 선택한 찰떡 챌린지
+            알고리즘이 선택한 찰떡 챌린지 · 매칭 {matchRate}%
           </span>
           <h1 className="text-2xl font-extrabold text-center break-keep">
             {bestMatch.name}
@@ -97,7 +124,7 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
         </div>
 
         {/* 상세 설명 영역 */}
-        <div className="p-8 space-y-6">
+        <div className="px-4 py-5 space-y-5">
           <p className="text-slate-700 text-sm leading-relaxed text-center font-medium">
             {bestMatch.description}
           </p>
@@ -123,8 +150,8 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
             </span>
           </div>
 
-          {/* 유저의 실제 점수 데이터 방사형 또는 바 차트로 표현하기 좋은 영역 */}
-          <div className="bg-slate-50 p-4 rounded-xl mt-4 border border-slate-100">
+          {/* 나의 4축 성향 분석 차트 */}
+          <div className="bg-slate-50 p-3 rounded-xl mt-2 border border-slate-100">
             <h3 className="text-[11px] font-bold text-slate-400 mb-3 text-center">나의 4축 성향 분석</h3>
             <div className="space-y-3">
               {[
@@ -146,21 +173,55 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
               ))}
             </div>
           </div>
+
+          {/* 💡 새로 추가된 영역: 서브 매치 & 워스트 매치 */}
+          <div className="grid grid-cols-2 gap-2 pt-1">
+            {/* 비슷한 릴스 (2등) */}
+            <div className="bg-blue-50/50 px-2 py-3 rounded-xl flex flex-col items-center text-center border border-blue-100">
+              <span className="text-[10px] font-bold text-blue-500 mb-2 tracking-tight">👍 이런 릴스도 딱!</span>
+              <span className="text-3xl mb-2">{similarMatch.imageUrl}</span>
+              <h4 className="text-xs font-bold text-slate-800 break-keep leading-tight">{similarMatch.name}</h4>
+              <span className="text-[10px] text-slate-500 mt-1">{similarMatch.matchRate}% 매칭</span>
+            </div>
+            
+            {/* 워스트 릴스 (꼴등) */}
+            <div className="bg-red-50/50 px-2 py-3 rounded-xl flex flex-col items-center text-center border border-red-100">
+              <span className="text-[10px] font-bold text-red-500 mb-2 tracking-tight">🙅‍♀️ 이건 피하세요!</span>
+              <span className="text-3xl mb-2">{worstMatch.imageUrl}</span>
+              <h4 className="text-xs font-bold text-slate-800 break-keep leading-tight">{worstMatch.name}</h4>
+              <span className="text-[10px] text-slate-500 mt-1">{worstMatch.matchRate}% 매칭</span>
+            </div>
+          </div>
+          
         </div>
       </div>
-{/* 🎬 릴스 영상 재생 영역 (캡처 영역 밖으로 분리) */}
-      {bestMatch.videoUrl && bestMatch.videoUrl.includes('instagram.com') && (
-        <div className="w-full max-w-md mt-6 rounded-2xl overflow-hidden shadow-sm flex flex-col items-center bg-white p-4">
-          <span className="text-xs font-bold text-slate-500 mb-4">👇 추천 챌린지 미리보기</span>
-          <InstagramEmbed url={bestMatch.videoUrl} width={328} />
+
+      {/* 🎬 스마트 미디어 미리보기 영역 (캡처 시 제외됨) */}
+      {(bestMatch.videoUrl || bestMatch.youtubeUrl) && (
+        <div className="w-full mt-4 flex flex-col items-center">
+          <span className="text-xs font-bold text-slate-500 mb-3">👇 추천 챌린지 미리보기</span>
+          <MediaPreview
+            url={bestMatch.videoUrl}
+            youtubeUrl={bestMatch.youtubeUrl}
+            challengeId={bestMatch.id}
+            title={bestMatch.name}
+            emoji={bestMatch.imageUrl}
+            previewImageUrl={bestMatch.previewImageUrl}
+            previewVideoUrl={bestMatch.previewVideoUrl}
+          />
         </div>
       )}
-      {/* 📺 유튜브 영상 재생 영역 (캡처 영역 밖으로 분리) */}
-      {bestMatch.videoUrl?.includes('youtube.com') && (
-  <YouTubeEmbed url={bestMatch.videoUrl} width={328} />
-)}
-      {/* 하단 하단 버튼 영역 (이미지 캡처 시 이 부분은 제외됨) */}
-      <div className="w-full max-w-md mt-6 space-y-3 pb-8">
+
+      {/* 하단 버튼 영역 */}
+      <div className="w-full mt-4 space-y-3 pb-4">
+        {/* 💡 새로 추가된 공유하기 버튼 */}
+        <button 
+          onClick={handleShare}
+          className="w-full py-4 flex items-center justify-center space-x-2 bg-[#FEE500] text-slate-900 font-extrabold rounded-2xl hover:bg-[#F4DC00] transition active:scale-95 shadow-md"
+        >
+          <span>🚀 친구에게 결과 공유하기</span>
+        </button>
+        
         <button 
           onClick={handleDownload}
           disabled={isDownloading}

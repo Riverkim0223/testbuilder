@@ -8,7 +8,10 @@ export interface Challenge {
   imageUrl: string;
   tags: string[];
   idealScores: { energy: number; presence: number; movement: number; direction: number; };
-  videoUrl?: string; // 👈 엑셀에 있던 '대표 URL'을 넣을 속성 추가!
+  videoUrl?: string;
+  youtubeUrl?: string;
+  previewImageUrl?: string; // public/previews/ch_001.jpg 등 캡처 이미지
+  previewVideoUrl?: string; // public/previews/ch_001.mp4 등 짧은 미리보기 영상
 }
 
 
@@ -20,7 +23,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🏊‍♀️',
     tags: ["#파워퍼포머형", "#반전매력형", "#현재상위권"],
     idealScores: { energy: 75, presence: 75, movement: 70, direction: 35 },
-    videoUrl: 'https://www.instagram.com/reel/DWbYVp-EwCl/'
+    videoUrl: 'https://www.instagram.com/reel/DWbYVp-EwCl/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=_lvzM4jOj6o'
   },
   {
     id: 'ch_002',
@@ -29,7 +33,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🦁',
     tags: ["#파워퍼포머형", "#칼각완성형", "#시선강탈형"],
     idealScores: { energy: 88, presence: 85, movement: 90, direction: 55 },
-    videoUrl: 'https://www.instagram.com/reel/DbYEphdS_Kp/'
+    videoUrl: 'https://www.instagram.com/reel/DbYEphdS_Kp/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=gHkV4E5J1lM'
   },
   {
     id: 'ch_003',
@@ -38,7 +43,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#칼각완성형", "#파워퍼포머형", "#현재상위권"],
     idealScores: { energy: 85, presence: 80, movement: 88, direction: 40 },
-    videoUrl: 'https://www.instagram.com/reel/DcC9E2oz5H6/'
+    videoUrl: 'https://www.instagram.com/reel/DcC9E2oz5H6/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=PsDwJSJMdxE'
   },
   {
     id: 'ch_004',
@@ -47,7 +53,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#말랑큐티형", "#표정천재형", "#파워퍼포머형"],
     idealScores: { energy: 65, presence: 65, movement: 55, direction: 25 },
-    videoUrl: 'https://www.instagram.com/reel/DXwkI5Jyde8/'
+    videoUrl: 'https://www.instagram.com/reel/DXwkI5Jyde8/',
+    youtubeUrl: 'https://www.youtube.com/shorts/O0SbDRS2RfI'
   },
   {
     id: 'ch_005',
@@ -56,7 +63,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#파워퍼포머형", "#칼각완성형", "#상승·지속형"],
     idealScores: { energy: 92, presence: 85, movement: 92, direction: 45 },
-    videoUrl: 'https://www.instagram.com/hyfaustine/reel/Db5xgcfI5e4/'
+    videoUrl: 'https://www.instagram.com/hyfaustine/reel/Db5xgcfI5e4/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=h7ITAdTxdxM'
   },
   {
     id: 'ch_006',
@@ -65,7 +73,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🔫',
     tags: ["#시선강탈형", "#칼각완성형", "#지속형"],
     idealScores: { energy: 88, presence: 90, movement: 88, direction: 60 },
-    videoUrl: 'https://www.instagram.com/reel/DVjcIAEjWq2/'
+    videoUrl: 'https://www.instagram.com/reel/DVjcIAEjWq2/',
+    youtubeUrl: 'https://www.youtube.com/shorts/oj-6jfhz2Cs'
   },
   {
     id: 'ch_007',
@@ -74,7 +83,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#파워퍼포머형", "#말랑큐티형", "#현재확산"],
     idealScores: { energy: 80, presence: 70, movement: 68, direction: 30 },
-    videoUrl: 'https://www.instagram.com/reel/DbqTeffBeIf/'
+    videoUrl: 'https://www.instagram.com/reel/DbqTeffBeIf/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=Do9BOhk0u_w'
   },
   {
     id: 'ch_008',
@@ -83,7 +93,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#칼각완성형", "#파워퍼포머형", "#에버그린상위권"],
     idealScores: { energy: 90, presence: 85, movement: 95, direction: 55 },
-    videoUrl: 'https://www.instagram.com/popular/golden-dance-challenge/'
+    videoUrl: 'https://www.instagram.com/popular/golden-dance-challenge/',
+    youtubeUrl: 'https://www.youtube.com/shorts/YRHXudxV9kI'
   },
   {
     id: 'ch_009',
@@ -92,7 +103,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#파워퍼포머형", "#반전매력형", "#2026여름대형트렌드"],
     idealScores: { energy: 90, presence: 75, movement: 80, direction: 35 },
-    videoUrl: 'https://www.instagram.com/reel/DaVyEpauwBV/'
+    videoUrl: 'https://www.instagram.com/reel/DaVyEpauwBV/',
+    youtubeUrl: 'https://www.youtube.com/shorts/PSe-L3V9nGo'
   },
   {
     id: 'ch_010',
@@ -101,7 +113,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#시선강탈형", "#반전매력형", "#현재트렌드"],
     idealScores: { energy: 45, presence: 85, movement: 25, direction: 90 },
-    videoUrl: 'https://www.instagram.com/reels/audio/27587126967609168'
+    videoUrl: 'https://www.instagram.com/reels/audio/27587126967609168',
+    youtubeUrl: 'https://www.youtube.com/shorts/yBRdTAR7-Js'
   },
   {
     id: 'ch_011',
@@ -110,7 +123,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#무드연출가형", "#아기자기디테일형", "#현재트렌드"],
     idealScores: { energy: 40, presence: 55, movement: 15, direction: 90 },
-    videoUrl: 'https://www.instagram.com/reels/audio/26129774656696571/'
+    videoUrl: 'https://www.instagram.com/reels/audio/26129774656696571/',
+    youtubeUrl: 'https://www.youtube.com/shorts/CCSiMOEALc4'
   },
   {
     id: 'ch_012',
@@ -119,7 +133,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#시선강탈형", "#표정천재형", "#현재트렌드"],
     idealScores: { energy: 65, presence: 95, movement: 20, direction: 65 },
-    videoUrl: 'https://www.instagram.com/reels/audio/407484960012624'
+    videoUrl: 'https://www.instagram.com/reels/audio/407484960012624',
+    youtubeUrl: 'https://www.youtube.com/watch?v=booKP974B0k',
+    previewImageUrl: '/previews/ch_012.jpg',
   },
   {
     id: 'ch_013',
@@ -128,7 +144,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#반전매력형", "#표정천재형", "#현재트렌드"],
     idealScores: { energy: 55, presence: 70, movement: 30, direction: 60 },
-    videoUrl: 'https://www.instagram.com/reels/audio/27435154212849943/'
+    videoUrl: 'https://www.instagram.com/reels/audio/27435154212849943/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=kuVNutQeBBA',
+    previewImageUrl: '/previews/ch_013.jpg',
   },
   {
     id: 'ch_014',
@@ -137,7 +155,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#시선강탈형", "#반전매력형", "#현재트렌드"],
     idealScores: { energy: 70, presence: 90, movement: 35, direction: 70 },
-    videoUrl: 'https://www.instagram.com/reels/audio/26261188156890234/'
+    videoUrl: 'https://www.instagram.com/reels/audio/26261188156890234/',
+    youtubeUrl: 'https://www.youtube.com/shorts/OI99VhaW7-A',
   },
   {
     id: 'ch_015',
@@ -146,7 +165,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#아기자기디테일형", "#말랑큐티형", "#표정천재형"],
     idealScores: { energy: 55, presence: 65, movement: 30, direction: 65 },
-    videoUrl: 'https://www.instagram.com/reels/audio/26282138668150926'
+    videoUrl: 'https://www.instagram.com/reels/audio/26282138668150926',
+    youtubeUrl: 'https://www.youtube.com/watch?v=CmT_b4SaV8w'
   },
   {
     id: 'ch_016',
@@ -155,7 +175,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#아기자기디테일형", "#말랑큐티형", "#무드연출가형"],
     idealScores: { energy: 35, presence: 45, movement: 15, direction: 75 },
-    videoUrl: 'https://www.instagram.com/reels/audio/980370881663525/'
+    videoUrl: 'https://www.instagram.com/reels/audio/980370881663525/',
+    youtubeUrl: 'https://www.youtube.com/shorts/Cfe_pQGsJjQ'
   },
   {
     id: 'ch_017',
@@ -164,7 +185,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#시선강탈형", "#무드연출가형", "#반전매력형"],
     idealScores: { energy: 55, presence: 75, movement: 20, direction: 95 },
-    videoUrl: 'https://www.instagram.com/reels/audio/26923322580669821'
+    videoUrl: 'https://www.instagram.com/reels/audio/26923322580669821',
+    youtubeUrl: 'https://www.youtube.com/shorts/5m4hCcnRhP4'
   },
   {
     id: 'ch_018',
@@ -173,7 +195,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#표정천재형", "#시선강탈형", "#현재대형트렌드"],
     idealScores: { energy: 30, presence: 85, movement: 10, direction: 55 },
-    videoUrl: 'https://www.instagram.com/reels/audio/27669710879352765/'
+    videoUrl: 'https://www.instagram.com/reels/audio/27669710879352765/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=fxDZvm0aqe4'
   },
   {
     id: 'ch_019',
@@ -182,7 +205,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#시선강탈형", "#반전매력형", "#현재트렌드"],
     idealScores: { energy: 80, presence: 95, movement: 35, direction: 70 },
-    videoUrl: 'https://www.instagram.com/reels/audio/1648322256423011'
+    videoUrl: 'https://www.instagram.com/reels/audio/1648322256423011',
+    youtubeUrl: 'https://www.youtube.com/shorts/yBRdTAR7-Js'
   },
   {
     id: 'ch_020',
@@ -191,7 +215,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#표정천재형", "#말랑큐티형", "#초기상승"],
     idealScores: { energy: 45, presence: 70, movement: 10, direction: 35 },
-    videoUrl: 'https://www.instagram.com/reels/audio/35125291193784685'
+    videoUrl: 'https://www.instagram.com/reels/audio/35125291193784685',
+    youtubeUrl: 'https://www.youtube.com/watch?v=FgogshnCziE'
   },
   {
     id: 'au_001',
@@ -200,7 +225,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🏊‍♀️',
     tags: ["#반전매력형", "#파워퍼포머형", "#무드연출가형"],
     idealScores: { energy: 75, presence: 70, movement: 65, direction: 50 },
-    videoUrl: 'https://www.instagram.com/reel/DWbYVp-EwCl/'
+    videoUrl: 'https://www.instagram.com/reel/DWbYVp-EwCl/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=WOmHZv4USUs'
   },
   {
     id: 'au_002',
@@ -209,7 +235,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🦁',
     tags: ["#파워퍼포머형", "#시선강탈형", "#현재상위권"],
     idealScores: { energy: 90, presence: 85, movement: 85, direction: 55 },
-    videoUrl: 'https://www.youtube.com/watch?v=m7k9UMcHbr0'
+    videoUrl: 'https://www.youtube.com/watch?v=m7k9UMcHbr0',
+    youtubeUrl: 'https://www.youtube.com/watch?v=m7k9UMcHbr0',
+    previewImageUrl: '/previews/au_002.jpg',
   },
   {
     id: 'au_003',
@@ -218,7 +246,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#칼각완성형", "#파워퍼포머형", "#현재상위권"],
     idealScores: { energy: 88, presence: 80, movement: 90, direction: 45 },
-    videoUrl: 'https://www.instagram.com/reel/DcC9E2oz5H6/'
+    videoUrl: 'https://www.instagram.com/reel/DcC9E2oz5H6/',
+    previewImageUrl: '/previews/au_003.jpg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=-4NUjd6S_fo'
   },
   {
     id: 'au_004',
@@ -227,7 +257,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#칼각완성형", "#무드연출가형", "#시선강탈형"],
     idealScores: { energy: 85, presence: 85, movement: 80, direction: 60 },
-    videoUrl: 'https://www.instagram.com/popular/golden-dance-challenge/'
+    videoUrl: 'https://www.instagram.com/popular/golden-dance-challenge/',
+    previewImageUrl: '/previews/au_004.jpg',
+    youtubeUrl: 'https://www.youtube.com/shorts/CCSiMOEALc4'
   },
   {
     id: 'au_005',
@@ -236,7 +268,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#무드연출가형", "#아기자기디테일형", "#시즌형현재트렌드"],
     idealScores: { energy: 20, presence: 35, movement: 5, direction: 60 },
-    videoUrl: 'https://www.instagram.com/reels/audio/921447351682109'
+    videoUrl: 'https://www.instagram.com/reels/audio/921447351682109',
+    youtubeUrl: 'https://www.youtube.com/watch?v=nn_0zPAfyo8',
+    previewImageUrl: '/previews/au_005.jpg',
   },
   {
     id: 'au_006',
@@ -245,7 +279,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🍬',
     tags: ["#말랑큐티형", "#아기자기디테일형", "#무드연출가형"],
     idealScores: { energy: 35, presence: 45, movement: 10, direction: 55 },
-    videoUrl: 'https://www.instagram.com/reels/audio/1741362503149150/'
+    videoUrl: 'https://www.instagram.com/reels/audio/1741362503149150/',
+    previewImageUrl: '/previews/au_006.jpg',
+    youtubeUrl: 'https://www.youtube.com/shorts/PSe-L3V9nGo',
   },
   {
     id: 'au_007',
@@ -254,7 +290,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#무드연출가형", "#시선강탈형", "#현재재상승"],
     idealScores: { energy: 55, presence: 70, movement: 20, direction: 70 },
-    videoUrl: 'https://www.instagram.com/reels/audio/1145851344072089/loser/'
+    videoUrl: 'https://www.instagram.com/reels/audio/1145851344072089/loser/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=s3a4OQR-10M',
+    previewImageUrl: '/previews/au_007.jpg',
   },
   {
     id: 'au_008',
@@ -263,7 +301,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#무드연출가형", "#시선강탈형", "#신규상승"],
     idealScores: { energy: 45, presence: 80, movement: 25, direction: 85 },
-    videoUrl: 'https://www.instagram.com/reels/audio/27070461759205089/'
+    videoUrl: 'https://www.instagram.com/reels/audio/27070461759205089/',
+    youtubeUrl: 'https://www.youtube.com/watch?v=afSgBNwmZrQ',
+    previewImageUrl: '/previews/au_008.jpg',
   },
   {
     id: 'au_009',
@@ -272,7 +312,9 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#시선강탈형", "#표정천재형", "#반전매력형"],
     idealScores: { energy: 75, presence: 95, movement: 30, direction: 65 },
-    videoUrl: 'https://www.instagram.com/reels/audio/1887907191828006/'
+    videoUrl: 'https://www.instagram.com/reels/audio/1887907191828006/',
+    previewImageUrl: '/previews/au_009.jpg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=h7ITAdTxdxM',
   },
   {
     id: 'au_010',
@@ -281,6 +323,8 @@ export const challenges: Challenge[] = [
     imageUrl: '🎬',
     tags: ["#말랑큐티형", "#아기자기디테일형", "#현재대형트렌드"],
     idealScores: { energy: 30, presence: 40, movement: 10, direction: 60 },
-    videoUrl: 'https://www.instagram.com/reels/audio/980370881663525/'
+    videoUrl: 'https://www.instagram.com/reels/audio/980370881663525/',
+    previewImageUrl: '/previews/au_010.jpg',
+    youtubeUrl: 'https://www.youtube.com/shorts/Cfe_pQGsJjQ'
   }
 ];

@@ -6,7 +6,7 @@ interface LandingProps {
 
 export default function Landing({ onStart }: LandingProps) {
   return (
-    <div className="min-h-screen flex flex-col justify-between p-6 bg-gradient-to-b from-pink-50 via-white to-purple-50 text-center">
+    <div className="min-h-screen flex flex-col justify-between px-3 py-5 bg-gradient-to-b from-pink-50 via-white to-purple-50 text-center">
       {/* 상단 헤더 & 비주얼 */}
       <div className="pt-12 space-y-6">
         <span className="inline-block bg-pink-100 text-pink-600 font-bold text-xs px-3 py-1.5 rounded-full animate-bounce">

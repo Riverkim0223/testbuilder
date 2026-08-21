@@ -213,3 +213,17 @@ export function calculateScores(answers: Record<number, number>): Scores {
     direction: toAxisScore(totals.direction, counts.direction),
   };
 }
+
+/** 질문 순서대로 모은 1~5점 배열 → 0~100점 4축 점수 */
+export function calculateScoresFromAnswers(answerScores: number[]): Scores {
+  const answers: Record<number, number> = {};
+
+  questions.forEach((question, index) => {
+    const score = answerScores[index];
+    if (score !== undefined) {
+      answers[question.id] = score;
+    }
+  });
+
+  return calculateScores(answers);
+}

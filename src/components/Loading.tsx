@@ -2,7 +2,7 @@
 
 export default function Loading() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-900 text-white text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center px-3 py-5 bg-slate-900 text-white text-center">
       <div className="space-y-6">
         {/* 아스키/이모지 로딩 애니메이션 */}
         <div className="relative flex items-center justify-center">

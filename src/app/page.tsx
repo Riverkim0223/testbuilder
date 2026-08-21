@@ -47,7 +47,7 @@ export default function Home() {
   };
 
   return (
-    <main className="max-w-md mx-auto min-h-screen bg-slate-50 relative overflow-x-hidden">
+    <main className="w-full max-w-md mx-auto min-h-screen bg-slate-50 relative overflow-x-hidden">
       {step === 'LANDING' && (
         <Landing onStart={() => setStep('CONDITION')} />
       )}

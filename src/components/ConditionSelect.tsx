@@ -16,7 +16,7 @@ export default function ConditionSelect({ onSubmit }: ConditionSelectProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between p-6 bg-white">
+    <div className="min-h-screen flex flex-col justify-between px-3 py-5 bg-white">
       <div className="pt-8 space-y-8">
         {/* 타이틀 */}
         <div>
@@ -42,7 +42,7 @@ export default function ConditionSelect({ onSubmit }: ConditionSelectProps) {
                 key={item.type}
                 type="button"
                 onClick={() => setPeopleType(item.type as UserCondition['peopleType'])}
-                className={`p-4 rounded-xl border text-center transition ${
+                className={`px-2.5 py-3 rounded-xl border text-center transition ${
                   peopleType === item.type
                     ? 'border-pink-500 bg-pink-50/50 text-pink-600 font-bold'
                     : 'border-slate-200 bg-slate-50 text-slate-600'
@@ -68,7 +68,7 @@ export default function ConditionSelect({ onSubmit }: ConditionSelectProps) {
                 key={item.level}
                 type="button"
                 onClick={() => setDifficulty(item.level)}
-                className={`w-full p-4 rounded-xl border text-left flex items-center justify-between transition ${
+                className={`w-full px-3 py-3 rounded-xl border text-left flex items-center justify-between transition ${
                   difficulty === item.level
                     ? 'border-pink-500 bg-pink-50/50 text-pink-600'
                     : 'border-slate-200 bg-slate-50 text-slate-600'

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Scores } from '@/types';
-import { questions } from '@/utils/questions';
+import { calculateScoresFromAnswers, questions } from '@/utils/questions';
 
 interface QuestionProps {
   onComplete: (scores: Scores) => void;
@@ -23,21 +23,12 @@ export default function Question({ onComplete }: QuestionProps) {
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      // 12개 질문 완료 시 4개 축(에너지, 존재감, 움직임, 연출) 평균 점수 계산
-      // 축별 문항 배치: 에너지(0,1,2), 존재감(3,4,5), 움직임(6,7,8), 연출(9,10,11)
-      const calculatedScores: Scores = {
-        energy: Math.round((nextAnswers[0] + nextAnswers[1] + nextAnswers[2]) / 3),
-        presence: Math.round((nextAnswers[3] + nextAnswers[4] + nextAnswers[5]) / 3),
-        movement: Math.round((nextAnswers[6] + nextAnswers[7] + nextAnswers[8]) / 3),
-        direction: Math.round((nextAnswers[9] + nextAnswers[10] + nextAnswers[11]) / 3),
-      };
-
-      onComplete(calculatedScores);
+      onComplete(calculateScoresFromAnswers(nextAnswers));
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between p-6 bg-white">
+    <div className="min-h-screen flex flex-col justify-between px-3 py-5 bg-white">
       {/* 상단 프로그레스 바 & 카운터 */}
       <div className="pt-6 space-y-4">
         <div className="flex justify-between items-center text-xs font-bold text-slate-400">
@@ -56,7 +47,7 @@ export default function Question({ onComplete }: QuestionProps) {
         {/* 질문 텍스트 */}
         <div className="pt-6">
           <span className="text-xs font-bold text-pink-500 uppercase tracking-wider">
-            {currentQ.axis}
+            {currentQ.axisLabel}
           </span>
           <h2 className="text-xl font-bold text-slate-900 mt-2 leading-snug">
             {currentQ.question}
@@ -71,7 +62,7 @@ export default function Question({ onComplete }: QuestionProps) {
             key={index}
             type="button"
             onClick={() => handleSelectOption(option.score)}
-            className="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-pink-50 hover:border-pink-300 text-left transition transform active:scale-98 group flex items-center"
+            className="w-full px-3 py-3.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-pink-50 hover:border-pink-300 text-left transition transform active:scale-98 group flex items-center"
           >
             {/* 💡 A, B, C, D, E 뱃지가 순서대로 들어갑니다 */}
             <span className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-slate-200 text-slate-500 text-xs font-bold mr-3 group-hover:bg-pink-200 group-hover:text-pink-600 transition">
