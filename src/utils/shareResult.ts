@@ -59,7 +59,7 @@ export function buildShareUrl(
 
 export function saveResultState(state: SavedResultState): void {
   if (typeof window === 'undefined') return;
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  persistResultSession(state);
   window.history.replaceState(null, '', buildShareUrl(state.scores, state.condition));
 }
 
@@ -84,7 +84,14 @@ export function loadResultState(): SavedResultState | null {
 export function clearResultState(): void {
   if (typeof window === 'undefined') return;
   sessionStorage.removeItem(STORAGE_KEY);
-  window.history.replaceState(null, '', window.location.pathname);
+  const cleanUrl = window.location.pathname;
+  window.history.replaceState(null, '', cleanUrl);
+}
+
+/** 세션에만 저장 (URL은 결과 화면 useEffect에서 갱신) */
+export function persistResultSession(state: SavedResultState): void {
+  if (typeof window === 'undefined') return;
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 /** 공유 미리보기용 OG는 홈 URL 기준이라, 유형 ID를 optional로 붙일 수 있음 */

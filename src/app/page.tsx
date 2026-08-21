@@ -1,14 +1,18 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Landing from '@/components/Landing';
 import ConditionSelect from '@/components/ConditionSelect';
 import Question from '@/components/Question';
 import Loading from '@/components/Loading';
 import Result from '@/components/Result';
 import { UserCondition, Scores } from '@/types';
-import { clearResultState, loadResultState, parseShareParams, saveResultState } from '@/utils/shareResult';
+import {
+  clearResultState,
+  parseShareParams,
+  saveResultState,
+} from '@/utils/shareResult';
 
 type Step = 'LANDING' | 'CONDITION' | 'QUESTION' | 'LOADING' | 'RESULT';
 
@@ -19,24 +23,34 @@ const defaultScores: Scores = {
   direction: 50,
 };
 
+const defaultCondition: UserCondition = {
+  peopleType: '1in',
+  difficulty: 2,
+};
+
 function HomeContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const initializedRef = useRef(false);
+  const skipRestoreRef = useRef(false);
+
   const [step, setStep] = useState<Step>('LANDING');
-  const [condition, setCondition] = useState<UserCondition>({
-    peopleType: '1in',
-    difficulty: 1,
-  });
+  const [condition, setCondition] = useState<UserCondition>(defaultCondition);
   const [userScores, setUserScores] = useState<Scores>(defaultScores);
   const [hydrated, setHydrated] = useState(false);
 
+  // 최초 1회만 URL/세션에서 결과 복원 (다시하기 후에는 복원 안 함)
   useEffect(() => {
-    const fromUrl = parseShareParams(searchParams);
-    const saved = fromUrl ?? loadResultState();
+    if (initializedRef.current) return;
+    initializedRef.current = true;
 
-    if (saved) {
-      setUserScores(saved.scores);
-      setCondition(saved.condition);
-      setStep('RESULT');
+    if (!skipRestoreRef.current) {
+      const fromUrl = parseShareParams(searchParams);
+      if (fromUrl) {
+        setUserScores(fromUrl.scores);
+        setCondition(fromUrl.condition);
+        setStep('RESULT');
+      }
     }
 
     setHydrated(true);
@@ -49,7 +63,9 @@ function HomeContent() {
   }, [step, userScores, condition]);
 
   const handleConditionSubmit = (selectedCondition: UserCondition) => {
+    skipRestoreRef.current = true;
     clearResultState();
+    router.replace('/', { scroll: false });
     setCondition(selectedCondition);
     setStep('QUESTION');
   };
@@ -64,8 +80,12 @@ function HomeContent() {
   };
 
   const handleRestart = () => {
+    skipRestoreRef.current = true;
     clearResultState();
+    setUserScores(defaultScores);
+    setCondition(defaultCondition);
     setStep('LANDING');
+    router.replace('/', { scroll: false });
   };
 
   if (!hydrated) {
