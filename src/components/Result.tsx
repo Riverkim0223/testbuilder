@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
-import html2canvas from 'html2canvas';
 import { Scores, UserCondition } from '@/types';
+import { captureResultBlob, downloadResultImage } from '@/utils/captureResultImage';
 import { getMatches } from '@/utils/matchAlgorithm';
 import { getTypeMatches } from '@/utils/typeMatching';
 import { buildShareText, buildShareUrl, saveResultState } from '@/utils/shareResult';
@@ -56,20 +56,13 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
     if (!resultCardRef.current) return;
     try {
       setIsDownloading(true);
-      const canvas = await html2canvas(resultCardRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-      });
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'reels-type-result.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      await downloadResultImage(resultCardRef.current);
     } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        return;
+      }
       console.error('이미지 저장에 실패했습니다:', error);
-      alert('이미지를 저장하는 중 오류가 발생했습니다.');
+      alert('이미지 저장에 실패했습니다. 잠시 후 다시 시도해 주세요.');
     } finally {
       setIsDownloading(false);
     }
@@ -83,23 +76,13 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
 
     try {
       if (resultCardRef.current && typeof navigator.share === 'function') {
-        const canvas = await html2canvas(resultCardRef.current, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-        });
-        const blob = await new Promise<Blob | null>((resolve) =>
-          canvas.toBlob((value) => resolve(value), 'image/png'),
-        );
+        const blob = await captureResultBlob(resultCardRef.current);
+        const file = new File([blob], 'reels-result.png', { type: 'image/png' });
+        const withImage = { files: [file], title: '나만의 릴스 성향 테스트 🎬', text: shareText, url: shareUrl };
 
-        if (blob) {
-          const file = new File([blob], 'reels-result.png', { type: 'image/png' });
-          const withImage = { files: [file], title: '나만의 릴스 성향 테스트 🎬', text: shareText, url: shareUrl };
-
-          if (navigator.canShare?.(withImage)) {
-            await navigator.share(withImage);
-            return;
-          }
+        if (navigator.canShare?.(withImage)) {
+          await navigator.share(withImage);
+          return;
         }
       }
 
@@ -132,6 +115,7 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
     <div className="min-h-screen flex flex-col items-center justify-between px-3 py-4 bg-slate-50">
       <div
         ref={resultCardRef}
+        data-result-card
         className="w-full bg-white rounded-2xl shadow-xl overflow-hidden mt-2 border border-slate-100"
       >
         {/* 8유형 매칭 — 메인 히어로 */}
@@ -141,7 +125,7 @@ export default function Result({ scores, condition = {} as UserCondition, onRest
             background: `linear-gradient(135deg, ${primaryType.themeColor} 0%, #1e1b4b 100%)`,
           }}
         >
-          <span className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm mb-3">
+          <span className="text-xs font-bold bg-white/30 px-3 py-1 rounded-full mb-3">
             나의 릴스 성향 유형 · {primaryType.matchRate}% 매칭
           </span>
           <div className="text-7xl mb-3 drop-shadow-lg">{primaryType.emoji}</div>

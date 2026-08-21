@@ -224,6 +224,26 @@ export function shuffleQuestions(source: QuestionItem[] = questions): QuestionIt
   return shuffled;
 }
 
+/** 선택지 순서 셔플 (점수는 option.score로 유지) */
+export function shuffleOptions(
+  options: QuestionItem['options'],
+): QuestionItem['options'] {
+  const shuffled = [...options];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+/** 질문 순서 + 각 문항 선택지 순서를 모두 섞어 테스트용 세트 생성 */
+export function prepareQuestions(source: QuestionItem[] = questions): QuestionItem[] {
+  return shuffleQuestions(source).map((question) => ({
+    ...question,
+    options: shuffleOptions(question.options),
+  }));
+}
+
 /** 섞인 질문 순서에 맞춘 1~5점 배열 → 0~100점 4축 점수 */
 export function calculateScoresFromAnswers(
   orderedQuestions: QuestionItem[],
